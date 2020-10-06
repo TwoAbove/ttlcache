@@ -180,6 +180,7 @@ func (cache *Cache) Close() error {
 		cache.mutex.Unlock()
 		return ErrClosed
 	}
+	cache.Purge()
 	return nil
 }
 
@@ -240,8 +241,7 @@ func (cache *Cache) Get(key string) (interface{}, error) {
 	if exists {
 		dataToReturn = item.data
 	}
-
-	var err error
+	var err error = nil
 	if !exists {
 		err = ErrNotFound
 	}
