@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"sync"
 
-	. "github.com/ReneKroon/ttlcache/v2"
+	. "github.com/TwoAbove/ttlcache"
 	"github.com/stretchr/testify/assert"
 )
 
