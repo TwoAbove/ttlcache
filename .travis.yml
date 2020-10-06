@@ -4,6 +4,7 @@ go:
   - "1.15"
   - "1.14"
   - "1.13"
+  
 git:
   depth: 1
 
@@ -12,6 +13,8 @@ install:
   - go install golang.org/x/tools/cmd/cover
   - go install golang.org/x/lint/golint
   - export PATH=$HOME/gopath/bin:$PATH
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
 
 script:
   - golint .
