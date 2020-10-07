@@ -132,7 +132,6 @@ func (cache *Cache) evictjob() {
 	// index will only be advanced if the current entry will not be evicted
 	i := 0
 	for item := cache.priorityQueue.items[i]; ; item = cache.priorityQueue.items[i] {
-
 		cache.removeItem(item)
 		if cache.priorityQueue.Len() == 0 {
 			return
@@ -202,6 +201,9 @@ func (cache *Cache) SetWithTTL(key string, data interface{}, ttl time.Duration) 
 		item.data = data
 		item.ttl = ttl
 	} else {
+		if cache.sizeLimit != 0 && len(cache.items) >= cache.sizeLimit {
+			cache.removeItem(cache.priorityQueue.items[0])
+		}
 		item = newItem(key, data, ttl)
 		cache.items[key] = item
 	}
@@ -374,6 +376,7 @@ func (cache *Cache) SetLoaderFunction(loader LoaderFunction) {
 
 // SetCacheSizeLimit sets a limit to the amount of cached items.
 // If a new item is getting cached, the closes item to being timed out will be replaced
+// Set to 0 to turn off
 func (cache *Cache) SetCacheSizeLimit(limit int) {
 	cache.sizeLimit = limit
 }
@@ -404,6 +407,7 @@ func NewCache() *Cache {
 		shutdownSignal:         shutdownChan,
 		isShutDown:             false,
 		loaderFunction:         nil,
+		sizeLimit:              0,
 	}
 	go cache.startExpirationProcessing()
 	return cache
