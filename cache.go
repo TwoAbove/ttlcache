@@ -31,6 +31,7 @@ type Cache struct {
 	shutdownSignal         chan (chan struct{})
 	isShutDown             bool
 	loaderFunction         LoaderFunction
+	sizeLimit              int
 }
 
 var (
@@ -180,7 +181,6 @@ func (cache *Cache) Close() error {
 		cache.mutex.Unlock()
 		return ErrClosed
 	}
-	cache.Purge()
 	return nil
 }
 
@@ -241,7 +241,8 @@ func (cache *Cache) Get(key string) (interface{}, error) {
 	if exists {
 		dataToReturn = item.data
 	}
-	var err error = nil
+
+	var err error
 	if !exists {
 		err = ErrNotFound
 	}
@@ -369,6 +370,12 @@ func (cache *Cache) SkipTTLExtensionOnHit(value bool) {
 // Additional Get calls on the same key block while fetching is in progress (groupcache style).
 func (cache *Cache) SetLoaderFunction(loader LoaderFunction) {
 	cache.loaderFunction = loader
+}
+
+// SetCacheSizeLimit sets a limit to the amount of cached items.
+// If a new item is getting cached, the closes item to being timed out will be replaced
+func (cache *Cache) SetCacheSizeLimit(limit int) {
+	cache.sizeLimit = limit
 }
 
 // Purge will remove all entries

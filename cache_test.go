@@ -10,7 +10,7 @@ import (
 
 	"fmt"
 	"sync"
-  
+
 	. "github.com/TwoAbove/ttlcache"
 	"github.com/stretchr/testify/assert"
 )
