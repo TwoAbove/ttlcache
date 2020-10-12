@@ -175,11 +175,11 @@ func (cache *Cache) Close() error {
 		cache.shutdownSignal <- feedback
 		<-feedback
 		close(cache.shutdownSignal)
-		cache.Purge()
 	} else {
 		cache.mutex.Unlock()
 		return ErrClosed
 	}
+	cache.Purge()
 	return nil
 }
 
@@ -244,7 +244,7 @@ func (cache *Cache) Get(key string) (interface{}, error) {
 		dataToReturn = item.data
 	}
 
-	var err error
+	var err error = nil
 	if !exists {
 		err = ErrNotFound
 	}
